@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block actor%}
+    <ul>
+        {% for myactor in actor %}
+        <li>
+            <b>actor_id:</b> {{myactor["actor_id"]}}
+        </li>
+        <li>
+            <b>first_name:</b>{{myactor["first_name"]}}
+        </li>
+        <li>
+            <b>last_name:</b> {{myactor["last_name"]}}
+        </li>
+        <li>
+            <b>last_update:</b> {{myactor["last_update"]}}
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock%}
