@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block post%}
+    <h1>Posts:</h1>
+    <ol>
+        {% for post in posts %}
+        <li>
+            <b>title:</b> {{post.title}}
+        </li>
+
+        <li>
+            <b>description:</b> {{post.description}}
+        </li>
+        {% endfor %}
+    </ol>
+    
+{% endblock%}

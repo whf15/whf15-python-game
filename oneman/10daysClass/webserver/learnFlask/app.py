@@ -3,8 +3,10 @@ from flask import (Flask,request,
                 redirect,url_for)
 import pymysql
 import pymysql.cursors
-
-app = Flask(__name__)
+from config import db,app
+from models import BlogPost
+#在config.py中已经初始化过
+# app = Flask(__name__)
 
 @app.route('/hello')
 def hello_world():
@@ -57,6 +59,10 @@ def get_db_connect(name):
     return render_template("404.html"),404
 
 
+@app.route("/posts")
+def list_blog():
+    posts = db.session.query(BlogPost).all()
+    return render_template("mypost.html",posts=posts)
 
 if __name__ == '__main__':
     app.run()
