@@ -18,6 +18,10 @@ def hello_Whf15(name=None):
 def postId(postid):
     return 'Hello : '+ str(postid)
 
+@app.route('/files/<path:filename>')
+def getdownload(filename):
+    return send_from_directory("download",filename)
+
 @app.route('/template/<name>')
 def template_hello(name=None):
     return render_template("mytest.html",user=name)
