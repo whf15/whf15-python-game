@@ -1,8 +1,11 @@
 {% extends "layout.html" %}
 {% block post%}
     <h1>Posts:</h1>
-    <ol>
+    <ul>
         {% for post in posts %}
+        <li>
+            <b>author:</b> {{post.author.name}}
+        </li>
         <li>
             <b>title:</b> {{post.title}}
         </li>
@@ -13,6 +16,6 @@
             <b>author_id:</b> {{post.author_id}}
         </li>
         {% endfor %}
-    </ol>
+    </ul>
     
 {% endblock%}
