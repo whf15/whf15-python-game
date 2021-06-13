@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title></title>
+    {% block head %}{% endblock %}
+    <!-- <link rel="stylesheet" href="/static/style.css" type="text/css"/>
+    <link href="/static/open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    {# Navigation #}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">DALSearch</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <form action="/search" method="get" class="form-inline my-2 my-lg-0">
+      <input name = "q" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+    </form>
+  </div>
+</nav>
+
+    <div class="container">
+        {% block body %}{% endblock %}
+        <div class="row  col-12 col-md-12" style="margin-top:20px">
+            <div class="row col-8 col-md-8">
+                <nav aria-label="Page navigation example">
+<ul class="list-unstyled">
+  {% for item in search %}
+  <li class="media my-4">
+    <img class="mr-3" src="{{ item['image'] }}" alt="Generic placeholder image" width="200px">
+    <div class="media-body">
+        <a href="{{ item['url'] }}" target="_blank"><h5 class="mt-0 mb-1">{{ item['title'] }}</h5></a>
+        {{ item['description'] }}
+    </div>
+  </li>
+  {% endfor %}
+  <li class="media my-4">
+    <img class="mr-3 " src="https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=2311790513,405754692&fm=58&s=5A94448AD0B885920D3F78B803009068&bpow=121&bpoh=75" alt="Generic placeholder image">
+    <div class="media-body">
+      <h5 class="mt-0 mb-1">王者荣耀(http://pvp.qq.com/)</h5>
+        《王者荣耀》是腾讯天美工作室历时3年推出的东方英雄即时对战手游大作,抗塔强杀、团灭超神,领略爽热血竞技的酣畅淋漓!1v1、3v3、5v5、闯关等丰富游戏模式,随时战...
+    </div>
+  </li>
+</ul>
+
+
+                </nav>
+            </div>
+            <div class="col-4 col-md-4 px-5">
+                <a href="#">想在这里推广您的产品吗？</a>
+                咨询热线:136988888888
+            </div>
+        </div>
+      </div>
+      {% block bottom %}{% endblock %}
+    </div>
+<div class="">
+  {% block footer %}
+    {% include "footer.html" %}
+  {% endblock %}
+</div>
+  {% block afterscript %}{% endblock %}
+  </body>
+</html>

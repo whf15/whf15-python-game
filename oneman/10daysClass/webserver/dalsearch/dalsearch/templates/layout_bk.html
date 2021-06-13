@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title></title>
+    {% block head %}{% endblock %}
+    <!-- <link rel="stylesheet" href="/static/style.css" type="text/css"/> -->
+  </head>
+  <body>
+    {# Navigation #}
+    <div id="navigation">
+            <div class="row">
+                <div class="col-sm">
+                    <a href="#">About</a>
+                    <a href="#">DAL</a>
+                </div>
+                <div class="col-sm">
+                    <a href="#">About</a>
+                    <a href="#">DAL</a>
+                </div>
+            </div>
+    </div>
+
+    <div id="wrapper">
+      {# Main Content #}
+      <div id="content">
+         {% block body %}{% endblock %}
+          <span class="ctr-p" id="body">
+<div style="margin-top:89px" id="lga">
+    <img alt="DAL Search" id="hplogo" src="/static/logo.png" >
+</div>
+          </span>
+          <form class="tsf" action="/search" method="get">
+              <div class="qval">
+                  <input id="sq" >
+              </div>
+              <div class="qbtn">
+                  <center>
+<input value="嗖嗖嗖" aria-label="DAL Search" name="btnK" type="submit" >
+<input value="倍爽儿" aria-label="Feeling Lucky" id="gbqfbb" name="btnI" type="submit">
+                  </center>
+              </div>
+          </form>
+      </div>
+  </div>
+  {% block bottom %}{% endblock %}
+
+  {% block footer %}
+    {% include "footer.html" %}
+  {% endblock %}
+
+  {% block afterscript %}{% endblock %}
+  </body>
+</html>
+
+                  <ul class="pagination">
+                    <li class="page-item disabled">
+                      <a class="page-link" href="#" tabindex="-1">上一页</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">4</a></li>
+                    <li class="page-item"><a class="page-link" href="#">5</a></li>
+                    <li class="page-item"><a class="page-link" href="#">6</a></li>
+                    <li class="page-item"><a class="page-link" href="#">7</a></li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">下一页</a>
+                    </li>
+                  </ul>
