@@ -1,1 +1,1 @@
-[]
+{'id': '1001', 'name': 'www', 'english_result': 123, 'python_result': 100, 'java_result': 12}
