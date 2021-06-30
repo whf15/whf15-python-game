@@ -1,1 +1,0 @@
-pip install djangorestframework markdown django-filter
