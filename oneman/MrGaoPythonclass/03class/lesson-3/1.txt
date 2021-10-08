@@ -1,0 +1,3 @@
+['mike4', 40, 'wanmen']
+['mike2', 20, 'wanmen']
+['mike1', '30', '']
