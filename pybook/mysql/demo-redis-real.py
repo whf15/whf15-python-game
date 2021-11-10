@@ -1,7 +1,7 @@
 import redis
 import time
 
-def publisher(channel, sec=1):
+def publisher(channel):
     cli = redis.Redis(host = "127.0.0.1",port = 6379,password = "whf",db = 1)
     msg = ["C","Python","Java","Go"]
     for i in msg:
@@ -10,7 +10,7 @@ def publisher(channel, sec=1):
 
 
 # 死循环消费者
-def customer(channel):
+def customer(channel, sec=1):
     cli = redis.Redis(host = "127.0.0.1",port = 6379,password = "whf",db = 1)
     pub = cli.pubsub()
     pub.subscribe(channel)
