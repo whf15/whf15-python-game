@@ -1,5 +1,6 @@
-from flask import render_template
+from flask import render_template, flash, redirect
 from app import app
+from .forms import LoginForm
 
 # 行装饰器，在作为参数的URL和函数之间创建一个关联
 @app.route('/')
@@ -32,4 +33,12 @@ def index():
         title = "Home",
         user = user,
         posts = posts
+    )
+
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+    form = LoginForm()
+    return render_template('login.html',
+        title = 'Sign In',
+        form = form
     )
