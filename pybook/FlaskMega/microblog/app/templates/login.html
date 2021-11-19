@@ -3,14 +3,15 @@
 
 {% block content %}
 <h1>Sign In</h1>
-<form action="" method="post" name="login">
+<form action="" method="post" name="login" novalidate>
     <!-- from.hidden_tag()模板参数会被替换为一个隐藏字段，实现在配置中激活的CSRF保护 -->
     {{form.hidden_tag()}}
     <p>
-        Please enter your OpenID:<br>
-        {{form.openid(size=80)}}<br>
+        {{ form.username.label }}<br>
+        {{ form.username(size=32) }}
     </p>
-    <p>{{form.remember_me}} Remember Me</p>
-    <p><input type="submit" value="Sign In"></p>
+    <p>{{  form.remember_me() }} {{ form.remember_me.label }}</p>
+    <p>{{ form.submit() }}</p>
+    <!-- <p><input type="submit" value="Sign In"></p> -->
 </form>
 {% endblock %}
