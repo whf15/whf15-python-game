@@ -26,7 +26,7 @@ class User(UserMixin, db.Model):
 # 为用户加载功能注册函数，将字符出类型的参数id出入用户加载函数
 @login.user_loader
 def load_user(id):
-    return Uer.query.get(int(id))
+    return User.query.get(int(id))
 # 表示用户发表的动态
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
