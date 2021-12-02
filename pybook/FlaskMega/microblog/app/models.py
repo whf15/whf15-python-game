@@ -12,6 +12,20 @@ class User(UserMixin, db.Model):
     # 用户与其动态之间关系的高级视图，一般relationship字段处于‘一’
     posts = db.relationship('Post', backref='author', lazy='dynamic')
 
+
+    followed = db.relationship(
+        # 右侧实体，自引用关系
+        'User',
+        # 指定用于该关系的关联表
+        secondary=followers,
+        # 通过关联表关联到左侧实体（关注者）的条件
+        primaryjoin=(followers.c.follower_id == id),
+        # 通过关联表关联到右侧实体（被关注者）的条件
+        secondaryjoin=(followers.c.followed_id == id),
+        # 右侧实体如何访问该关系
+        backref=db.backref('followers',lazy='dynamic'),
+        lazy = 'dynamic'
+    )
     # 用于在调试时打印用户实例
     def __repr__(self):
         return '<User {}>'.format(self.username)
