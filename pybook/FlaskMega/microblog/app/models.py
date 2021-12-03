@@ -12,6 +12,11 @@ class User(UserMixin, db.Model):
     # 用户与其动态之间关系的高级视图，一般relationship字段处于‘一’
     posts = db.relationship('Post', backref='author', lazy='dynamic')
 
+    # 粉丝机制
+    followers = db.Table('followers',
+        db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+        db.Column('followed_id', db.Integer, db.ForeignKey('user.id')),
+    )
 
     followed = db.relationship(
         # 右侧实体，自引用关系
@@ -37,6 +42,37 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def follow(self, user):
+        if not self.is_following(user):
+            self.followed.append(user)
+
+    def unfollow(self, user):
+        if self.is_following(user):
+            self.followed.remove(user)
+
+    def is_following(self, user):
+        return self.followed.filter(
+            followers.c.followed_id == user.id
+        ).count()>0
+    
+# Post.query.join(...).filter(...).order_by(...)
+    def followed_posts_test(self):
+        return Post.query.join(
+                followers,
+                (followers.c.followed_id == Post.user_id)
+            ).filter(followers.c.follower_id == self.id
+            ).order_by(Post.timestamp.desc()
+            )
+        
+
+    def followed_posts(self):
+        followed = Post.query.join(
+            followers,
+            (followers.c.followers.c.follower_id == Post.user_id)
+        ).filter(followers.c.followed_id == self.id)
+        own = Post.query.filter_by(user_id=self.id)
+        return followed.union(own).order_by(Post.timestamp.desc())
+        
 # 为用户加载功能注册函数，将字符出类型的参数id出入用户加载函数
 @login.user_loader
 def load_user(id):
