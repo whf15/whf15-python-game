@@ -85,3 +85,16 @@ def register():
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
+@app.route("/user/<username>")
+@login_required
+
+def user(username):
+    # first方法的变种，在没有结果的情况下会自动发送404 error给客户端
+    user = User.query.filter_by(username=username).first_or_404()
+    posts = [
+        {'author': user, 'body': 'Test post #1'},
+        {'author': user, 'body': 'Test post #2'}
+    ]
+    return render_template('user.html', user= user, posts = posts)
+    
