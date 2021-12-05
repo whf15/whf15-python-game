@@ -1,3 +1,4 @@
+from hashlib import md5
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from app import db,login
@@ -17,6 +18,10 @@ class User(UserMixin, db.Model):
         db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
         db.Column('followed_id', db.Integer, db.ForeignKey('user.id')),
     )
+
+    # 更多有趣得个人资料
+    about_me = dv.Column(db.String(140))
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
 
     followed = db.relationship(
         # 右侧实体，自引用关系
@@ -55,6 +60,7 @@ class User(UserMixin, db.Model):
             followers.c.followed_id == user.id
         ).count()>0
     
+
 # Post.query.join(...).filter(...).order_by(...)
     def followed_posts_test(self):
         return Post.query.join(
@@ -73,6 +79,12 @@ class User(UserMixin, db.Model):
         own = Post.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Post.timestamp.desc())
         
+# 头像
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return 'https://gravatar.loli.net/avatar/{}?d=identicon&s={}'.format(digest, size)
+
+
 # 为用户加载功能注册函数，将字符出类型的参数id出入用户加载函数
 @login.user_loader
 def load_user(id):

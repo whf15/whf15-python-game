@@ -1,3 +1,4 @@
+from hashlib import md5
 from flask import render_template, flash, redirect, url_for,request
 from app import app, db
 from .forms import LoginForm, RegistrationForm
@@ -88,7 +89,6 @@ def register():
 
 @app.route("/user/<username>")
 @login_required
-
 def user(username):
     # first方法的变种，在没有结果的情况下会自动发送404 error给客户端
     user = User.query.filter_by(username=username).first_or_404()
@@ -96,5 +96,5 @@ def user(username):
         {'author': user, 'body': 'Test post #1'},
         {'author': user, 'body': 'Test post #2'}
     ]
+
     return render_template('user.html', user= user, posts = posts)
-    
