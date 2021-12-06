@@ -1,7 +1,7 @@
 # from flask.ext.wtf import Form 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
+from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Length
 from app.models import User
 
 
@@ -15,6 +15,7 @@ class LoginForm(FlaskForm):
     # remember_me = BooleanField('remember_me', default=False)
 
 class RegistrationForm(FlaskForm):
+
     username = StringField('Username', validators=[DataRequired()])
     # email在DataRequired之后添加了第二个验证码
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -24,7 +25,7 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Register')
 
 
-# 当添加validate_<file_name>的方法时，WTForms将这些方法作为自定义验证器
+    # 当添加validate_<file_name>的方法时，WTForms将这些方法作为自定义验证器
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
@@ -35,3 +36,10 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address!')
+
+        
+# 给用户一个表单，让他们输入一些资料
+class EditProfileForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    about_me = TextAreaField('About me', validators=[Length(min=0, max=140)])
+    submit = SubmitField('Submit')

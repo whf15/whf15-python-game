@@ -20,7 +20,7 @@ class User(UserMixin, db.Model):
     )
 
     # 更多有趣得个人资料
-    about_me = dv.Column(db.String(140))
+    about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
 
     followed = db.relationship(
@@ -40,7 +40,7 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
-# 密码哈希逻辑，在无d需持久化存储原始密码的条件下执行安全的密码验证
+ # 密码哈希逻辑，在无d需持久化存储原始密码的条件下执行安全的密码验证
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -61,7 +61,7 @@ class User(UserMixin, db.Model):
         ).count()>0
     
 
-# Post.query.join(...).filter(...).order_by(...)
+    # Post.query.join(...).filter(...).order_by(...)
     def followed_posts_test(self):
         return Post.query.join(
                 followers,
@@ -79,7 +79,7 @@ class User(UserMixin, db.Model):
         own = Post.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Post.timestamp.desc())
         
-# 头像
+    # 头像
     def avatar(self, size):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return 'https://gravatar.loli.net/avatar/{}?d=identicon&s={}'.format(digest, size)
