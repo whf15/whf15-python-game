@@ -14,9 +14,13 @@ class User(UserMixin, db.Model):
     posts = db.relationship('Post', backref='author', lazy='dynamic')
 
     # 粉丝机制
+    # followers = db.Table('followers',
+    #     db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+    #     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
+    # )
     followers = db.Table('followers',
         db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
-        db.Column('followed_id', db.Integer, db.ForeignKey('user.id')),
+        db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
     )
 
     # 更多有趣得个人资料
@@ -57,9 +61,7 @@ class User(UserMixin, db.Model):
 
     def is_following(self, user):
         return self.followed.filter(
-            followers.c.followed_id == user.id
-        ).count()>0
-    
+            followers.c.followed_id == user.id).count() > 0
 
     # Post.query.join(...).filter(...).order_by(...)
     def followed_posts_test(self):
@@ -70,7 +72,6 @@ class User(UserMixin, db.Model):
             ).order_by(Post.timestamp.desc()
             )
         
-
     def followed_posts(self):
         followed = Post.query.join(
             followers,
@@ -89,6 +90,7 @@ class User(UserMixin, db.Model):
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
 # 表示用户发表的动态
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
