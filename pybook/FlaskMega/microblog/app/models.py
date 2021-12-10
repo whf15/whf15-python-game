@@ -5,6 +5,11 @@ from app import db,login
 from flask_login import UserMixin
 
 # class User(db.Model):
+followers = db.Table('followers',
+        db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+        db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
+    )
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -18,28 +23,31 @@ class User(UserMixin, db.Model):
     #     db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
     #     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
     # )
-    followers = db.Table('followers',
-        db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
-        db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
-    )
+    
 
     # 更多有趣得个人资料
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
 
+    # followed = db.relationship(
+    #     # 右侧实体，自引用关系
+    #     'User',
+    #     # 指定用于该关系的关联表
+    #     secondary=followers,
+    #     # 通过关联表关联到左侧实体（关注者）的条件
+    #     primaryjoin=(followers.c.follower_id == id),
+    #     # 通过关联表关联到右侧实体（被关注者）的条件
+    #     secondaryjoin=(followers.c.followed_id == id),
+    #     # 右侧实体如何访问该关系
+    #     backref=db.backref('followers',lazy='dynamic'),
+    #     lazy = 'dynamic'
+    # )
     followed = db.relationship(
-        # 右侧实体，自引用关系
-        'User',
-        # 指定用于该关系的关联表
-        secondary=followers,
-        # 通过关联表关联到左侧实体（关注者）的条件
+        'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
-        # 通过关联表关联到右侧实体（被关注者）的条件
         secondaryjoin=(followers.c.followed_id == id),
-        # 右侧实体如何访问该关系
-        backref=db.backref('followers',lazy='dynamic'),
-        lazy = 'dynamic'
-    )
+        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+
     # 用于在调试时打印用户实例
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -64,22 +72,27 @@ class User(UserMixin, db.Model):
             followers.c.followed_id == user.id).count() > 0
 
     # Post.query.join(...).filter(...).order_by(...)
-    def followed_posts_test(self):
-        return Post.query.join(
-                followers,
-                (followers.c.followed_id == Post.user_id)
-            ).filter(followers.c.follower_id == self.id
-            ).order_by(Post.timestamp.desc()
-            )
+    # def followed_posts_test(self):
+    #     return Post.query.join(
+    #             followers,
+    #             (followers.c.followed_id == Post.user_id)
+    #         ).filter(followers.c.follower_id == self.id
+    #         ).order_by(Post.timestamp.desc()
+    #         )
+        
+    # def followed_posts(self):
+    #     followed = Post.query.join(
+    #         followers,(followers.c.follower_id == Post.user_id)
+    #     ).filter(followers.c.followed_id == self.id)
+    #     own = Post.query.filter_by(user_id=self.id)
+    #     return followed.union(own).order_by(Post.timestamp.desc())
         
     def followed_posts(self):
         followed = Post.query.join(
-            followers,
-            (followers.c.followers.c.follower_id == Post.user_id)
-        ).filter(followers.c.followed_id == self.id)
+            followers, (followers.c.followed_id == Post.user_id)).filter(
+                followers.c.follower_id == self.id)
         own = Post.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Post.timestamp.desc())
-        
     # 头像
     def avatar(self, size):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
