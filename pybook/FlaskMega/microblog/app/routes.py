@@ -1,7 +1,8 @@
 from hashlib import md5
 from flask import render_template, flash, redirect, url_for,request
 from app import app, db
-from .forms import LoginForm, RegistrationForm, EditProfileForm, EmptyForm, PostForm
+from .forms import LoginForm, RegistrationForm, EditProfileForm, EmptyForm, PostForm, ResetPasswordRequestForm
+from .email import send_password_reset_email
 from flask_login import current_user, login_user, logout_user,login_required
 from app.models import User, Post
 from datetime import datetime
@@ -170,3 +171,20 @@ def explore():
         if posts.has_prev else None
     return render_template("index.html", title='Explore', posts=posts.items,
                           next_url=next_url, prev_url=prev_url)
+
+
+@app.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    # 先判断用户是否已登录
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = ResetPasswordRequestForm()
+    # 当表单提交并有效时，我通过用户在表单中提供的电子邮件查找用户。如果我找到该用户，我会发送一封密码重置电子邮件
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.eamil.data).first()
+        if user:
+            send_password_reset_email(user)
+        flash('Check your email for the instructions to reset your password!')
+        return redirect(url_for('login'))
+    return render_template('reset_password_request.html',
+                           title='Reset Password', form=form)

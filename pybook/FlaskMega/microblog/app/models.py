@@ -1,7 +1,9 @@
 from hashlib import md5
+from time import time
+import jwt
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-from app import db,login
+from app import db,login,app
 from flask_login import UserMixin
 
 # class User(db.Model):
@@ -83,6 +85,24 @@ class User(UserMixin, db.Model):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return 'https://gravatar.loli.net/avatar/{}?d=identicon&s={}'.format(digest, size)
 
+    # 以字符串形式生成一个JWT令牌 
+    def get_reset_password_token(self, expires_in=600):
+        return jwt.encode(
+            {'reset_password':self.id, 'exp': time() + expires_in},
+            app.config['SECRET_KEY'],algorithm='HS256').decode('utf-8')
+    
+    # 静态方法（不会接受类作为第一个参数）
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            # 通过调用PyJWT的jwt.decode()函数来解码
+            id = jwt.decode(token, app.config['SECRET_KEY'],
+                            algorithms=['HS256'])['reset_password']
+        except:
+            # 如果令牌不能被验证或已过期
+            return 
+        # 令牌有效负载的reset_password的值就是用户的ID
+        return Uesr.query.get(id)
 
 # 为用户加载功能注册函数，将字符出类型的参数id出入用户加载函数
 @login.user_loader
