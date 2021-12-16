@@ -89,7 +89,7 @@ class User(UserMixin, db.Model):
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
             {'reset_password':self.id, 'exp': time() + expires_in},
-            app.config['SECRET_KEY'],algorithm='HS256').decode('utf-8')
+            app.config['SECRET_KEY'],algorithm='HS256')
     
     # 静态方法（不会接受类作为第一个参数）
     @staticmethod
@@ -102,7 +102,7 @@ class User(UserMixin, db.Model):
             # 如果令牌不能被验证或已过期
             return 
         # 令牌有效负载的reset_password的值就是用户的ID
-        return Uesr.query.get(id)
+        return User.query.get(id)
 
 # 为用户加载功能注册函数，将字符出类型的参数id出入用户加载函数
 @login.user_loader
