@@ -20,9 +20,13 @@ bootstrap = Bootstrap(app)
 moment = Moment(app)
 babel = Babel(app)
 
-from app import routes, models, errors
 
+# Babel 实例提供了一个 localeselector 装饰器。 为每个请求调用装饰器函数以选择用于 该请求的语言
 @babel.localeselector
 def get_locale():
     return request.accept_languages.best_match(app.config['LANGUAGES'])
+    # 测试西班牙语
+    # return 'es'
     
+from app import routes, models, errors
+
