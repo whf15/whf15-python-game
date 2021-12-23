@@ -27,6 +27,8 @@ def get_locale():
     return request.accept_languages.best_match(app.config['LANGUAGES'])
     # 测试西班牙语
     # return 'es'
+    # 测试中文
+    # return 'zh_Hans_CN'
     
 from app import routes, models, errors
 

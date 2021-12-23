@@ -1,5 +1,5 @@
 from hashlib import md5
-from flask import render_template, flash, redirect, url_for,request
+from flask import render_template, flash, redirect, url_for,request, g
 from werkzeug.urls import url_parse
 from app import app, db
 from .forms import LoginForm, RegistrationForm, EditProfileForm, EmptyForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm
@@ -101,6 +101,7 @@ def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+    g.locale = str(get_locale())
 
 
 @app.route('/edit_profile', methods=['GET','POST'])
@@ -126,14 +127,14 @@ def follow(username):
     if form.validate_on_submit():
         user = User.query.filter_by(username=username).first()
         if user is None:
-            flash(_('User {} not found.'.format(username)))
+            flash(_('User %(username)s not found.', username=username))
             return redirect(url_for('index'))
         if user == current_user:
             flash(_('You cannot follow yourself!'))
             return redirect(url_for('user', username=username))
         current_user.follow(user)
         db.session.commit()
-        flash(_('You are following {}!'.format(username)))
+        flash(_('You are not following %(username)s.', username=username))
         return redirect(url_for('user', username=username))
     else:
         return redirect(url_for('index'))
@@ -145,14 +146,14 @@ def unfollow(username):
     if form.validate_on_submit():
         user = User.query.filter_by(username=username).first()
         if user is None:
-            flash(_('User {} not found.'.format(username)))
+            flash(_('User %(username)s not found.', username=username))
             return redirect(url_for('index'))
         if user == current_user:
             flash(_('You cannot unfollow yourself!'))
             return redirect(url_for('user', username=username))
         current_user.unfollow(user)
         db.session.commit()
-        flash(_('You are not following {}.'.format(username)))
+        flash(_('You are not following %(username)s.', username=username))
         return redirect(url_for('user', username=username))
     else:
         return redirect(url_for('index'))
